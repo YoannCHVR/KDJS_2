@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <head>
- 
+
         <meta charset="utf-8" />
- 
+
     <title>Kit de Survie JS</title>
     <meta name="description" content="">
- 
+
     <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 
     <style>
-    	body{ font-family: 'Quicksand', sans-serif; 
+    	body{ font-family: 'Quicksand', sans-serif;
     		margin: 0; }
 
     	.leftPanel{
@@ -33,28 +33,100 @@
 
     <script src="jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
-    	$(document).ready(function(){
-    		// Ecrire les scripts ici
-    	});
+    $(document).ready(function() {
+
+      var items;
+
+      $('li[data-id=test]');
+
+      var listCharacter = $('.leftPanel > ul');
+
+      $.getJSON("http://www.labri.fr/perso/pbiasutt/Cours/KDJS/TD02/characters.php", function(data) {
+        items = data;
+      });
+
+      //filter
+      $('form > input[name=search]').keyup(function() {
+        var filter = $(this).val();
+        listCharacter.html("");
+        $.each(items, function(key, val) {
+          if(val.name.indexOf(filter) != -1)
+            listCharacter.append("<li><a href='#' data-id='" + val.id + "'>" + val.name + ", id: " + val.id + "</li>");
+        });
+
+        $("a[data-id]").click(function(e) {
+          e.preventDefault();
+          charsInfo($(this).attr("data-id"));
+        });
+      });
+
+      function charsInfo(id) {
+        var recipient = $('.centerPanel');
+        //getList
+        $.getJSON("https://cors.io/?https://anapioficeandfire.com/api/characters/" + id, function(data) {
+          console.log(data);
+
+          recipient.html("<h3><strong>" + data.name + "</strong></h3>");
+
+          var charsResult = $("<div class='character-infos'></div>");
+
+          charsResult.append($("<p>Gender: " + data.gender + "</p>"));
+          charsResult.append($("<p>Born: " + data.born + "</p>"));
+          charsResult.append($("<p>Died: " + data.died + "</p>"));
+          charsResult.append($("<p>Culture: " + data.culture + "</p>"));
+
+          if (data.titles.length != 0) {
+              charsResult.append($("<p>Titles</p>"));
+              var titlesList = $("<ul></ul>");
+              data.titles.forEach(title => { titlesList.append($("<li>" + title + "</li>")); });
+              charsResult.append(titlesList);
+          }
+
+          if (data.aliases.length != 0) {
+              charsResult.append($("<p>Aliases</p>"));
+              var aliasesList = $("<ul></ul>");
+              data.aliases.forEach(alias => { aliasesList.append($("<li>" + alias + "</li>")); });
+              charsResult.append(aliasesList);
+          }
+
+          if (data.playedBy.length != 0) {
+              charsResult.append($("<p>Played By</p>"));
+              var playedByList = $("<ul></ul>");
+              data.playedBy.forEach(people => { playedByList.append($("<li>" + people + "</li>")); });
+              charsResult.append(playedByList);
+          }
+
+          charsResult.append($("<a href='" + data.url + "'>Lien du Personnage - API</a>"));
+
+          recipient.append(charsResult);
+
+        });
+      }
+    });
    	</script>
 </head>
 <body>
 	<div class="leftPanel">
-		<form action="#">
+		<form action="#" method="get">
 			<input type="text" name="search" placeholder="Jon Snow ..." />
 		</form>
 		Résultats:
-		<ul>
-			<li><a href="#" data-id="X">Résultat 1</a></li>
-			<li><a href="#" data-id="X">Résultat 2</a></li>
-			<li><a href="#" data-id="X">Résultat 3</a></li>
-			<li><a href="#" data-id="X">Résultat 4</a></li>
-		</ul>
+    <ul>
+      <li>
+        <a href="#">R1</a>
+      </li>
+      <li>
+        <a href="#">R2</a>
+      </li>
+      <li>
+        <a href="#">R3</a>
+      </li>
+    </ul>
 	</div>
 
 	<div class="centerPanel">
 		Résultat
 	</div>
 </body>
- 
+
 </html>
