@@ -21,10 +21,9 @@
         $("input[type='button']").click(function() {
           console.log('Début du chargement du script');
           $("div#recipient").load("http://www.labri.fr/perso/pbiasutt/Cours/KDJS/TD02/exo1.php #conteneur" + $(this).val(), function(responseTxt, statusTxt, xhr){
-              alert("Chargement...");
+              $('img').css("display", "none");
               if(statusTxt == "success")
-                alert("Chargement fini. Status: " + xhr.status);
-                $(".chargement").css("display", "none");
+                  $(".chargement").css("display", "none");
               if(statusTxt == "error")
                   console.log("Erreur: " + xhr.status + ": " + xhr.statusText);
           });
@@ -37,6 +36,7 @@
   <div>
     <input type="button" value="1">
     <input type="button" value="2">
+    <img src="giphy.gif" alt="">
   </div>
 	<div id="recipient"></div>
 </body>
