@@ -1,28 +1,62 @@
 <!DOCTYPE html>
+
 <head>
- 
-    <meta charset="utf-8" />
- 
-    <title>Kit de Survie JS</title>
-    <meta name="description" content="">
- 
-    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+  <meta charset="utf-8" />
+  <title>Kit de Survie JS</title>
+  <meta name="description" content="">
 
-    <style>
-    	body{ font-family: 'Quicksand', sans-serif; }
+  <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 
-    	
+  <style>
+    body{ font-family: 'Quicksand', sans-serif; }
 	</style>
 
-    <script src="jquery-3.2.1.min.js"></script>
-    <script type="text/javascript">
-    	$(document).ready(function(){
-    		// Ecrire les scripts ici
-    	});
-   	</script>
+  <script src="jquery-3.2.1.min.js"></script>
+  <script type="text/javascript">
+    //Ecrivez un script qui permet d’eﬀectuer une recherche en utilisant l’API de l’IGN 
+    $(document).ready(function() {
+
+      $('form').submit(function(event) {
+
+        $("ul.my-new-list").html('');
+
+        var researchField = $('.categorieSelector').val();
+        var request = "https://geo.api.gouv.fr/communes?" + researchField + "=";
+        var reserchValue = $('input[name=word]').val();
+
+        request += reserchValue + "&format=json&geometry=centre";
+
+        console.log(request);
+
+        $.getJSON(request, function(data) {
+          var items = [];
+          $.each(data, function(key, val) {
+            items.push("<li id='" + key + "'>" + val.nom + "</li>");
+          });
+
+          $("<ul/>", {
+            "class": "my-new-list",
+            html: items.join("")
+          }).appendTo("body");
+        });
+
+        event.preventDefault();
+      });
+    });
+  </script>
 </head>
+
 <body>
-	<!-- Code HTML -->
+  <!-- Code HTML -->
+  <form action="exo5.html" method="post">
+    <select class="categorieSelector" name="categorie">
+      <option value="nom" selected>Nom</option>
+      <option value="codePostal">Code Postal</option>
+      <option value="codeDepartement">Code département</option>
+    </select>
+    <input type="text" name="word">
+    <input type="submit" value="Rechercher">
+  </form>
 </body>
- 
+
 </html>
